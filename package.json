@@ -1,8 +1,13 @@
 {
   "name": "project-git-pull",
   "displayName": "Project Git Pull",
+  "publisher": "nemanja-radic",
   "description": "Automatically fetches and pulls the latest changes when a project is opened.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JunkyardDog25/project-git-pull.git"
+  },
   "engines": {
     "vscode": "^1.145.0"
   },
