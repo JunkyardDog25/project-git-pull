@@ -1,7 +1,7 @@
 {
   "name": "project-git-pull",
   "displayName": "Project Git Pull",
-  "description": "",
+  "description": "Automatically pull the latest changes from the remote repository for the current project in VS Code.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.145.0"
@@ -9,15 +9,32 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
+  "extensionDependencies": ["vscode.git"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "project-git-pull.helloWorld",
-        "title": "Hello World"
+        "command": "project-git-pull.syncNow",
+        "title": "Project Git Pull: Sync Now"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Project Git Pull",
+      "properties": {
+        "projectGitPull.branch": {
+          "type": "string",
+          "default": "develop",
+          "description": "The team's main branch that should be kept up to date."
+        },
+        "projectGitPull.mode": {
+          "type": "string",
+          "enum": ["ask", "auto"],
+          "default": "ask",
+          "description": "'ask' shows a notification before pulling, 'auto' pulls without asking (only when there are no uncommitted changes)."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
