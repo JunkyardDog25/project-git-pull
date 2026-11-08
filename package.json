@@ -1,23 +1,142 @@
 {
   "name": "project-git-pull",
   "displayName": "Project Git Pull",
-  "description": "",
+  "publisher": "nemanja-radic",
+  "description": "Automatically fetches and pulls the latest changes when a project is opened.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JunkyardDog25/project-git-pull.git"
+  },
   "engines": {
     "vscode": "^1.145.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "project-git-pull.helloWorld",
-        "title": "Hello World"
+        "command": "project-git-pull.syncNow",
+        "title": "Project Git Pull: Sync Now",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "project-git-pull.pull",
+        "title": "Project Git Pull: Pull",
+        "icon": "$(repo-pull)"
+      },
+      {
+        "command": "project-git-pull.switchAndPull",
+        "title": "Project Git Pull: Switch to Team Branch and Pull",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "project-git-pull.clearActivity",
+        "title": "Project Git Pull: Clear Activity",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "project-git-pull.showOutput",
+        "title": "Project Git Pull: Show Output",
+        "icon": "$(output)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "projectGitPull",
+          "title": "Project Git Pull",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "projectGitPull": [
+        {
+          "id": "projectGitPull.repositories",
+          "name": "Repositories"
+        },
+        {
+          "id": "projectGitPull.activity",
+          "name": "Activity"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "projectGitPull.repositories",
+        "contents": "No Git repository was found in this window.\n[Open Folder](command:workbench.action.files.openFolder)"
+      },
+      {
+        "view": "projectGitPull.activity",
+        "contents": "No activity yet.\n[Sync Now](command:project-git-pull.syncNow)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "project-git-pull.syncNow",
+          "when": "view == projectGitPull.repositories",
+          "group": "navigation"
+        },
+        {
+          "command": "project-git-pull.showOutput",
+          "when": "view == projectGitPull.activity",
+          "group": "navigation@1"
+        },
+        {
+          "command": "project-git-pull.clearActivity",
+          "when": "view == projectGitPull.activity",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "project-git-pull.pull",
+          "when": "view == projectGitPull.repositories && viewItem == repo.behind",
+          "group": "inline"
+        },
+        {
+          "command": "project-git-pull.switchAndPull",
+          "when": "view == projectGitPull.repositories && viewItem == repo.offTarget",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "project-git-pull.pull",
+          "when": "false"
+        },
+        {
+          "command": "project-git-pull.switchAndPull",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Project Git Pull",
+      "properties": {
+        "projectGitPull.branch": {
+          "type": "string",
+          "default": "develop",
+          "description": "The team's main branch that should be kept up to date."
+        },
+        "projectGitPull.mode": {
+          "type": "string",
+          "enum": ["ask", "auto"],
+          "default": "ask",
+          "description": "'ask' shows a notification before pulling, 'auto' pulls without asking (only when there are no uncommitted changes)."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
